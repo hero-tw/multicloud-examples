@@ -17,9 +17,11 @@ resource "google_cloudfunctions_function" "function" {
   trigger_http          = true
   timeout               = 60
   entry_point           = "helloGET"
+
   labels {
     my-label = "my-label-value"
   }
+
   environment_variables {
     MY_ENV_VAR = "my-env-var-value"
   }

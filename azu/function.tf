@@ -1,4 +1,3 @@
-
 resource "azurerm_resource_group" "test" {
   name     = "azure-functions-test-rg"
   location = "westus2"

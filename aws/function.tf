@@ -6,17 +6,22 @@ resource "aws_iam_role" "lambda_role" {
 # trust policy
 data "aws_iam_policy_document" "trust_policy" {
   statement {
-    actions = ["sts:AssumeRole"]
+    actions = [
+      "sts:AssumeRole",
+    ]
 
     principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
+      type = "Service"
+
+      identifiers = [
+        "lambda.amazonaws.com",
+      ]
     }
   }
 }
 
-resource "aws_lambda_function" "test_lambda" {
-  filename         = "lambda.zip"
+resource "aws_lambda_function" "lambda" {
+  filename         = "../build/lambda.zip"
   function_name    = "lambda_function_name"
   role             = "${aws_iam_role.lambda_role.arn}"
   handler          = "exports.test"

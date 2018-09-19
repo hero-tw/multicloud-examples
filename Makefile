@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
 AWS_PROFILE=default
-PROJECT=terraform-poc
+PROJECT=eks-hero
 PRIMARY_REGION=us-east-1
 
 help:
@@ -9,7 +9,7 @@ help:
 
 # setup terraform bucket for aws
 one-time:
-	aws s3api create-bucket --bucket "${PROJECT}-infra-${PRIMARY_REGION}" \
+	aws s3api create-bucket --bucket "tf-${PROJECT}-${PRIMARY_REGION}" \
 	--acl private --profile ${AWS_PROFILE} --region ${PRIMARY_REGION}
 
 aws-apply:
