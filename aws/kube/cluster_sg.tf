@@ -30,3 +30,16 @@ resource "aws_security_group_rule" "cluster-ingress-workstation-https" {
   to_port           = 443
   type              = "ingress"
 }
+
+resource "aws_security_group_rule" "cluster-ingress-workstation-http" {
+  cidr_blocks = [
+    "38.140.6.10/32",
+  ]
+
+  description       = "Allow workstation to communicate with the cluster on port 8080"
+  from_port         = 8080
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.kube.id}"
+  to_port           = 8080
+  type              = "ingress"
+}
