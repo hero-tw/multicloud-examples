@@ -26,6 +26,7 @@ This script creates an IAM user and stores the access key and id in AWS paramete
 
 Usage:
 ```
+cd multicloud-examples && cd aws
 ./create-iam-user.sh [new username]
 ```
 
