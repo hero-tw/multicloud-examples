@@ -4,7 +4,7 @@ https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html
 To deploy a configured cluster:
 
 ```
-ce multicloud-examples
+cd multicloud-examples
 make aws-apply
 ```
 
