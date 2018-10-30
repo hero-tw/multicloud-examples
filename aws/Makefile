@@ -4,7 +4,12 @@ init:
 	terraform init && terraform get -update
 
 apply: init
-	terraform apply -auto-approve
+	read -p "Cluster Name: " CLUSTER_NAME; \
+	read -p "Region: " REGION; \
+	echo "Deploying $${CLUSTER_NAME} to $${REGION}"; \
+	TF_VAR_app_name=$$CLUSTER_NAME TF_VAR_aws_region=$$REGION terraform apply -auto-approve && \
+	aws eks update-kubeconfig --name $$CLUSTER_NAME --region=$$REGION && \
+	terraform output config-map  | kubectl apply -f -
 
 plan: init
 	terraform plan

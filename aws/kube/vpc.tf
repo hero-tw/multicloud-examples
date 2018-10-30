@@ -5,7 +5,7 @@ resource "aws_vpc" "kube" {
 
   tags = "${
 	map(
-	 "Name", "kube",
+	 "Name", "${var.app_name}-vpc",
 	 "kubernetes.io/cluster/${var.app_name}", "shared"
 	)
   }"
@@ -20,7 +20,7 @@ resource "aws_subnet" "kube" {
 
   tags = "${
 	map(
-	 "Name", "kube",
+	 "Name", "${var.app_name}-subnet",
 	 "kubernetes.io/cluster/${var.app_name}", "shared"
 	)
   }"
@@ -30,7 +30,7 @@ resource "aws_internet_gateway" "kube" {
   vpc_id = "${aws_vpc.kube.id}"
 
   tags {
-    Name = "kube"
+    Name = "${var.app_name}-gateway"
   }
 }
 

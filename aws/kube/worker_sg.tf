@@ -1,5 +1,5 @@
 resource "aws_security_group" "node" {
-  name        = "terraform-eks-node"
+  name        = "terraform-eks-node-${var.app_name}"
   description = "Security group for all nodes in the cluster"
   vpc_id      = "${aws_vpc.kube.id}"
 
@@ -15,7 +15,7 @@ resource "aws_security_group" "node" {
 
   tags = "${
     map(
-     "Name", "terraform-eks-node",
+     "Name", "terraform-eks-node-${var.app_name}",
      "kubernetes.io/cluster/${var.app_name}", "owned"
     )
   }"

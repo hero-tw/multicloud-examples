@@ -2,7 +2,8 @@
 
 AWS_PROFILE=default
 PROJECT=eks-hero
-PRIMARY_REGION=us-east-1
+PRIMARY_REGION=us-west-1
+TF_VAR_aws_region = $PRIMARY_REGION
 
 help:
 	cat ./Makefile
@@ -14,12 +15,18 @@ one-time:
 
 aws-apply:
 	(cd aws && make apply)
+	(cd jenkins && kubectl apply -f jenkins-env.yaml)
+
+aws-destroy:
+	(cd aws && make destroy)
 
 gcp-apply:
 	(cd gcp && make apply)
+	(cd ../jenkins && kubectl apply -f jenkins.yaml)
 
 azu-apply:
 	(cd azu && make apply)
+	(cd jenkins && kubectl apply -f jenkins.yaml)
 
 all-the-things: aws-apply gcp-apply azu-apply
 
@@ -27,6 +34,7 @@ burn-it-all:
 	(cd aws && make destroy) \
 	(cd gcp && make destroy) \
 	(cd azu && make destroy) 
+
 
 
 

@@ -31,7 +31,7 @@ resource "aws_launch_configuration" "kube" {
   iam_instance_profile        = "${aws_iam_instance_profile.node.name}"
   image_id                    = "${data.aws_ami.eks-worker.id}"
   instance_type               = "m4.large"
-  name_prefix                 = "terraform-eks"
+  name_prefix                 = "terraform-eks-${var.app_name}"
 
   security_groups = [
     "${aws_security_group.node.id}",
@@ -49,7 +49,7 @@ resource "aws_autoscaling_group" "kube" {
   launch_configuration = "${aws_launch_configuration.kube.id}"
   max_size             = 2
   min_size             = 1
-  name                 = "terraform-eks"
+  name                 = "terraform-eks-${var.app_name}"
 
   vpc_zone_identifier = [
     "${aws_subnet.kube.*.id}",
@@ -57,7 +57,7 @@ resource "aws_autoscaling_group" "kube" {
 
   tag {
     key                 = "Name"
-    value               = "terraform-eks"
+    value               = "terraform-eks-${var.app_name}"
     propagate_at_launch = true
   }
 

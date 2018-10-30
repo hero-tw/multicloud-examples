@@ -1,5 +1,5 @@
 resource "aws_iam_role" "kube" {
-  name = "terraform-eks-node"
+  name = "terraform-eks-node-${var.app_name}"
 
   assume_role_policy = <<POLICY
 {
@@ -33,7 +33,7 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOn
 }
 
 resource "aws_iam_instance_profile" "node" {
-  name = "terraform-eks"
+  name = "terraform-eks-${var.app_name}"
   role = "${aws_iam_role.kube.name}"
 }
 
