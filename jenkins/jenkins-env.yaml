@@ -217,7 +217,7 @@ spec:
   - ReadWriteOnce
   awsElasticBlockStore:
     fsType: ext4
-    volumeID: aws://us-west-2a/vol-0232c9ec9be32d1cd
+    volumeID: aws://us-west-2a/$JENKINS_VOLUME_ID
   capacity:
     storage: 8Gi
   mountOptions:
