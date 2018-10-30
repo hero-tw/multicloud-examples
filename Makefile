@@ -15,7 +15,7 @@ one-time:
 
 aws-apply:
 	(cd aws && make apply)
-	(cd jenkins && kubectl apply -f jenkins-env.yaml)
+	(cd jenkins && )
 
 aws-destroy:
 	(cd aws && make destroy)

@@ -25,3 +25,7 @@ output "kubeconfig" {
 output "config-map" {
   value = "${module.kube.config-map-aws-auth}"
 }
+
+output "jenkins-volume" {
+  value = "${module.kube.jenkins-volume}"
+}

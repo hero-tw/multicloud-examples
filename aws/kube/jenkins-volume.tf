@@ -5,3 +5,7 @@ resource "aws_ebs_volume" "jenkins" {
     Name = "jenkins"
   }
 }
+
+output "jenkins-volume" {
+  value = "${aws_ebs_volume.jenkins.id}"
+}
