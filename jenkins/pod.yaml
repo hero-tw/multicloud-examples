@@ -8,10 +8,10 @@ data:
     cp --no-clobber /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home;
     # Install missing plugins
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
-    rm -rf /usr/share/jenkins/ref/plugins/*.lock
+    rm -rf `find /usr/share/jenkins/ref/plugins/ -name *.lock`
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
     # Copy plugins to shared volume
-    cp -n /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins;
+    cp -r -n /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins;
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
@@ -201,23 +201,21 @@ metadata:
     release: jenkins
 spec:
   containers:
-  - args:
-    - --argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)
-    - --argumentsRealm.roles.$(ADMIN_USER)=admin
-    env:
+  - env:
     - name: JAVA_TOOL_OPTIONS
     - name: JENKINS_OPTS
     - name: ADMIN_PASSWORD
       valueFrom:
         secretKeyRef:
           key: jenkins-admin-password
-          name: jenkins
+          name: jenkins-admin-account
     - name: ADMIN_USER
       valueFrom:
         secretKeyRef:
           key: jenkins-admin-user
-          name: jenkins
-    image: jenkins/jenkins:lts
+          name: jenkins-admin-account
+    image: jenkins/jenkins:lts-alpine
+    args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)","--argumentsRealm.roles.$(ADMIN_USER)=admin" ]
     imagePullPolicy: Always
     livenessProbe:
       failureThreshold: 12
@@ -274,7 +272,7 @@ spec:
   - command:
     - sh
     - /var/jenkins_config/apply_config.sh
-    image: jenkins/jenkins:lts
+    image: jenkins/jenkins:lts-alpine
     imagePullPolicy: Always
     name: copy-default-config
     resources:
@@ -284,8 +282,8 @@ spec:
       requests:
         cpu: 50m
         memory: 256Mi
-    terminationMessagePath: /dev/termination-log
-    terminationMessagePolicy: File
+    #terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: FallbackToLogsOnError
     volumeMounts:
     - mountPath: /var/jenkins_home
       name: jenkins-home
