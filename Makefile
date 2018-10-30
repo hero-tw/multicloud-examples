@@ -15,7 +15,7 @@ one-time:
 
 aws-apply:
 	(cd aws && make apply)
-	(cd jenkins && )
+	(cd jenkins && make apply)
 
 aws-destroy:
 	(cd aws && make destroy)
