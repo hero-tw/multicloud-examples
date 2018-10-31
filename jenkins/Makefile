@@ -1,5 +1,6 @@
 apply:
-	sed 's/$$JENKINS_VOLUME_ID/'`cd ../aws; terraform output jenkins-volume`'/g' env.yaml | kubectl apply -f -
+	sed 's/$$JENKINS_VOLUME_ID/'`cd ../aws; terraform output jenkins-volume | sed 's/\//\\\\\//g' `'/g' env.yaml | \
+	sed 's/$$JENKINS_GRADLE_VOLUME_ID/'`cd ../aws; terraform output jenkins-gradle-volume | sed 's/\//\\\\\//g' `'/g' |  kubectl apply -f -
 	kubectl apply -f pod.yaml
 	kubectl apply -f load-balancer.yaml
 	while [ `kubectl get service jenkins-lb -o json | jq .status.loadBalancer.ingress[0].hostname | sed s/\"//g` == "null" ]; do sleep 1; done;

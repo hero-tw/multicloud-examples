@@ -14,6 +14,7 @@ module "kube" {
   source = "./kube"
 
   app_name = "${var.app_name}"
+  aws_region_storage = "${var.aws_region_storage}"
 }
 
 
@@ -29,3 +30,7 @@ output "config-map" {
 output "jenkins-volume" {
   value = "${module.kube.jenkins-volume}"
 }
+output "jenkins-gradle-volume" {
+  value = "${module.kube.jenkins-gradle-volume}"
+}
+
