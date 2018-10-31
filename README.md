@@ -22,12 +22,15 @@ You can log into the Jenkins instance with:
 **_Requires [jq](https://stedolan.github.io/jq/download/) to be installed_** 
 
 
-This script creates an IAM user and stores the access key and id in AWS parameter store. Can be used in any instance that requires a new user to be created
+This script creates an IAM user and stores the access key and id in AWS parameter store. Can be used in any instance that requires a new user to be created.
+
+
+It creates a new IAM user, generates an access key and stores the access key and access key id in parameter store
 
 Usage:
 ```
 cd multicloud-examples && cd aws
-./create-iam-user.sh [new username]
+./create-iam-user.sh [username]
 ```
 
 
