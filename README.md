@@ -32,5 +32,5 @@ Usage:
 cd multicloud-examples && cd aws
 ./create-iam-user.sh [username] [group name]
 ```
-If you don't put a group name it will default to creating a new user without a group
+If you don't put a group name or put a group name that doesn't exist, it will default to creating a new user without a group.
 
