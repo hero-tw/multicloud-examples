@@ -241,7 +241,9 @@ metadata:
     release: jenkins
 spec:
   containers:
-  - env:
+  - image: jenkins/jenkins:lts-alpine
+    args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)","--argumentsRealm.roles.$(ADMIN_USER)=admin" ]
+    env:
     - name: JAVA_TOOL_OPTIONS
     - name: JENKINS_OPTS
     - name: ADMIN_PASSWORD
@@ -254,8 +256,7 @@ spec:
         secretKeyRef:
           key: jenkins-admin-user
           name: jenkins-admin-account
-    image: jenkins/jenkins:lts-alpine
-    args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)","--argumentsRealm.roles.$(ADMIN_USER)=admin" ]
+
     imagePullPolicy: Always
     livenessProbe:
       failureThreshold: 12
@@ -307,6 +308,28 @@ spec:
     - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
       name: jenkins-secret
       readOnly: true
+  - image: sonarqube:latest
+    args: ["-Dsonar.web.context=/sonar"]
+    name: sonarqube
+    env:
+    - name: SONARQUBE_JDBC_PASSWORD
+      value: "$SONAR_POSTGRES_PASSWORD"
+    - name: SONARQUBE_JDBC_URL
+      value: "jdbc:postgresql://$SONAR_POSTGRES_URL"
+    ports:
+    - containerPort: 9000
+      name: sonarqube
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /sonar/
+        port: sonarqube
+        scheme: HTTP
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    terminationMessagePolicy: FallbackToLogsOnError
   dnsPolicy: ClusterFirst
   initContainers:
   - command:
@@ -322,7 +345,6 @@ spec:
       requests:
         cpu: 50m
         memory: 256Mi
-    #terminationMessagePath: /dev/termination-log
     terminationMessagePolicy: FallbackToLogsOnError
     volumeMounts:
     - mountPath: /var/jenkins_home

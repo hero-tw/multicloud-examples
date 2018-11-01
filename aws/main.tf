@@ -17,6 +17,17 @@ module "kube" {
   aws_region_storage = "${var.aws_region_storage}"
 }
 
+output "app_name" {
+  value = "${var.app_name}"
+}
+
+output "aws-region" {
+  value = "${var.aws_region}"
+}
+
+output "aws-region_storage" {
+  value = "${var.aws_region_storage}"
+}
 
 output "kubeconfig" {
   value = "${module.kube.kubeconfig}"
@@ -33,4 +44,13 @@ output "jenkins-volume" {
 output "jenkins-gradle-volume" {
   value = "${module.kube.jenkins-gradle-volume}"
 }
+
+output "sonar-postgres-address" {
+  value = "${module.kube.sonar-postgres-address}"
+}
+
+output "sonar-postgres-password" {
+  value = "${module.kube.sonar-postgres-password}"
+}
+
 

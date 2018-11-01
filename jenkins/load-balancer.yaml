@@ -12,3 +12,7 @@ spec:
     port: 8080
     targetPort: 8080
     protocol: TCP
+  - name: sonar
+    port: 9000
+    targetPort: 9000
+    protocol: TCP
