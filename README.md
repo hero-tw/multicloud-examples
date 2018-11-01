@@ -8,7 +8,8 @@ cd multicloud-examples
 make aws-apply
 ```
 
-You will be prompted for the name of the new cluster you want to create, and a region (should be us-east-1 or us-west-2).
+You will be prompted for the name of the new cluster you want to create, and a region (should be us-east-1 or us-west-2), 
+and a storage zone (us-east-1a, us-east-1b, us-west-2a, etc).
 
 It will then spin for a while as it applies the configuration. 
 At the end you should get the URL for a Jenkins instance.

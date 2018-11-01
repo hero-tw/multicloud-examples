@@ -33,61 +33,107 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@1.12.4">
-          <name>kubernetes</name>
-          <templates>
-            <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-              <inheritFrom></inheritFrom>
-              <name>default</name>
-              <instanceCap>2147483647</instanceCap>
-              <idleMinutes>0</idleMinutes>
-              <label>jenkins-jenkins-slave </label>
-              <nodeSelector></nodeSelector>
-                <nodeUsageMode>NORMAL</nodeUsageMode>
-              <volumes>
-              </volumes>
-              <containers>
-                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-                  <name>jnlp</name>
-                  <image>jenkins/jnlp-slave:3.10-1</image>
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@1.13.2">
+              <name>kubernetes</name>
+              <defaultsProviderTemplate></defaultsProviderTemplate>
+              <templates>
+                <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+                  <inheritFrom></inheritFrom>
+                  <name>jenkins-worker</name>
+                  <namespace>default</namespace>
                   <privileged>false</privileged>
+                  <capOnlyOnAlivePods>false</capOnlyOnAlivePods>
                   <alwaysPullImage>false</alwaysPullImage>
-                  <workingDir>/home/jenkins</workingDir>
-                  <command></command>
-                  <args>${computer.jnlpmac} ${computer.name}</args>
-                  <ttyEnabled>false</ttyEnabled>
-                  # Resources configuration is a little hacky. This was to prevent breaking
-                  # changes, and should be cleanned up in the future once everybody had
-                  # enough time to migrate.
-                  <resourceRequestCpu>200m</resourceRequestCpu>
-                  <resourceRequestMemory>256Mi</resourceRequestMemory>
-                  <resourceLimitCpu>200m</resourceLimitCpu>
-                  <resourceLimitMemory>256Mi</resourceLimitMemory>
-                  <envVars>
-                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
-                      <key>JENKINS_URL</key>
-                      <value>http://jenkins:8080</value>
-                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
-                  </envVars>
-                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-              </containers>
-              <envVars/>
-              <annotations/>
-              <imagePullSecrets/>
-              <nodeProperties/>
-              <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
-            </org.csanchez.jenkins.plugins.kubernetes.PodTemplate></templates>
-          <serverUrl>https://kubernetes.default</serverUrl>
-          <skipTlsVerify>false</skipTlsVerify>
-          <namespace>default</namespace>
-          <jenkinsUrl>http://jenkins:8080</jenkinsUrl>
-          <jenkinsTunnel>jenkins-agent:50000</jenkinsTunnel>
-          <containerCap>10</containerCap>
-          <retentionTimeout>5</retentionTimeout>
-          <connectTimeout>0</connectTimeout>
-          <readTimeout>0</readTimeout>
-          <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Never"/>
-        </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
+                  <instanceCap>1</instanceCap>
+                  <slaveConnectTimeout>100</slaveConnectTimeout>
+                  <idleMinutes>0</idleMinutes>
+                  <activeDeadlineSeconds>0</activeDeadlineSeconds>
+                  <label>autoscale</label>
+                  <serviceAccount>jenkins</serviceAccount>
+                  <nodeSelector></nodeSelector>
+                  <nodeUsageMode>NORMAL</nodeUsageMode>
+                  <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
+                  <workspaceVolume class="org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.EmptyDirWorkspaceVolume">
+                    <memory>false</memory>
+                  </workspaceVolume>
+                  <volumes>
+                    <org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
+                      <mountPath>/root/.gradle</mountPath>
+                      <claimName>jenkins-gradle-cache</claimName>
+                      <readOnly>false</readOnly>
+                    </org.csanchez.jenkins.plugins.kubernetes.volumes.PersistentVolumeClaim>
+                    <org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
+                      <mountPath>/var/run/docker.sock</mountPath>
+                      <hostPath>/var/run/docker.sock</hostPath>
+                    </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
+                    <org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+                      <mountPath>/var/run/secrets/tokens</mountPath>
+                      <secretName>jenkins-secret</secretName>
+                    </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+                  </volumes>
+                  <containers>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                      <name>jnlp</name>
+                      <image>124837307879.dkr.ecr.us-east-1.amazonaws.com/com.thoughtworks/jnlp-worker-aws:7</image>
+                      <privileged>true</privileged>
+                      <alwaysPullImage>false</alwaysPullImage>
+                      <workingDir>/root</workingDir>
+                      <command></command>
+                      <args>${computer.jnlpmac} ${computer.name}</args>
+                      <ttyEnabled>false</ttyEnabled>
+                      <resourceRequestCpu>500m</resourceRequestCpu>
+                      <resourceRequestMemory>4096Mi</resourceRequestMemory>
+                      <resourceLimitCpu>500m</resourceLimitCpu>
+                      <resourceLimitMemory>4096Mi</resourceLimitMemory>
+                      <envVars>
+                        <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                          <key>JENKINS_URL</key>
+                          <value>http://jenkins.default:8080</value>
+                        </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                        <org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
+                          <key>GRADLE_USER_HOME</key>
+                          <value>/root/.gradle</value>
+                        </org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
+                      </envVars>
+                      <ports/>
+                      <livenessProbe>
+                        <execArgs></execArgs>
+                        <timeoutSeconds>0</timeoutSeconds>
+                        <initialDelaySeconds>0</initialDelaySeconds>
+                        <failureThreshold>0</failureThreshold>
+                        <periodSeconds>0</periodSeconds>
+                        <successThreshold>0</successThreshold>
+                      </livenessProbe>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  </containers>
+                  <envVars/>
+                  <annotations/>
+                  <imagePullSecrets>
+                    <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+                      <name></name>
+                    </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+                  </imagePullSecrets>
+                  <nodeProperties/>
+                  <yaml></yaml>
+                  <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
+                </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+              </templates>
+              <serverUrl>https://kubernetes.default</serverUrl>
+              <serverCertificate></serverCertificate>
+              <skipTlsVerify>false</skipTlsVerify>
+              <addMasterProxyEnvVars>false</addMasterProxyEnvVars>
+              <capOnlyOnAlivePods>false</capOnlyOnAlivePods>
+              <namespace>default</namespace>
+              <jenkinsUrl>http://jenkins.default:8080</jenkinsUrl>
+              <jenkinsTunnel>jenkins-agent:50000</jenkinsTunnel>
+              <containerCap>1</containerCap>
+              <retentionTimeout>5</retentionTimeout>
+              <connectTimeout>0</connectTimeout>
+              <readTimeout>0</readTimeout>
+              <usageRestricted>false</usageRestricted>
+              <maxRequestsPerHost>32</maxRequestsPerHost>
+              <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.OnFailure"/>
+            </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
       <quietPeriod>5</quietPeriod>
       <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
