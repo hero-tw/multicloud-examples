@@ -6,9 +6,9 @@ init:
 apply: init
 	read -p "Cluster Name: " CLUSTER_NAME; \
 	read -p "Region: " REGION; \
-	read -p "Storage Region" STORAGE_REGION; \
+	read -p "Storage Region: " STORAGE_REGION; \
 	echo "Deploying $${CLUSTER_NAME} to $${REGION}"; \
-	TF_VAR_app_name=$$CLUSTER_NAME TF_VAR_aws_region=$$REGION TF_VAR_aws_region_storage=$#STORAGE_REGION terraform apply -auto-approve && \
+	TF_VAR_app_name=$$CLUSTER_NAME TF_VAR_aws_region=$$REGION TF_VAR_aws_region_storage=$$STORAGE_REGION terraform apply -auto-approve && \
 	aws eks update-kubeconfig --name $$CLUSTER_NAME --region=$$REGION && \
 	terraform output config-map  | kubectl apply -f -
 
