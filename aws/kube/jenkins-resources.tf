@@ -40,6 +40,7 @@ resource "aws_db_instance" "db" {
   username               = "sonar"
   port                   = "5432"
   skip_final_snapshot    = true
+  final_snapshot_identifier = "${var.app_name}-sonar-final-snapshot"
   password               = "${random_string.password.result}"
   vpc_security_group_ids = ["${aws_vpc.kube.default_security_group_id}", "${aws_security_group.node.id}"]
   db_subnet_group_name   = "${aws_db_subnet_group.default.name}"
