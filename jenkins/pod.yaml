@@ -73,7 +73,7 @@ data:
                  <containers>
                    <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                      <name>jnlp</name>
-                     <image>124837307879.dkr.ecr.us-east-1.amazonaws.com/com.thoughtworks/jnlp-worker-aws:7</image>
+                     <image>124837307879.dkr.ecr.us-east-1.amazonaws.com/com.thoughtworks/jnlp-worker-aws:8</image>
                      <privileged>true</privileged>
                      <alwaysPullImage>false</alwaysPullImage>
                      <workingDir>/root</workingDir>
