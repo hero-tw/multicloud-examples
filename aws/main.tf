@@ -4,9 +4,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "tf-eks-hero-us-west-1"
     key    = "terraform"
-    region = "us-west-1"
   }
 }
 

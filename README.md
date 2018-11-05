@@ -7,6 +7,14 @@ https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html
  * aws-iam-authenticator
  * kubectl
 
+## Create S3 Bucket for Terraform Backend
+To create a bucket for a new terraform backend:
+
+```
+cd multicloud-examples
+make one-time
+
+```
 ## AWS Cluster Deployment
 To deploy a configured cluster:
 
@@ -15,8 +23,7 @@ cd multicloud-examples
 make aws-apply
 ```
 
-You will be prompted for the name of the new cluster you want to create, and a region (should be us-east-1 or us-west-2), 
-and a storage zone (us-east-1a, us-east-1b, us-west-2a, etc).
+You will be prompted for the name of the new cluster you want to create, and a region (should be us-east-1 or us-west-2), a storage zone (us-east-1a, us-east-1b, us-west-2a, etc), and a bucket name where terraform backend is stored. 
 
 It will then spin for a while as it applies the EKS configuration. 
 

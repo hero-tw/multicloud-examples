@@ -1,7 +1,12 @@
 .DEFAULT_GOAL := plan
 
 init:
-	terraform init && terraform get -update
+	read -p "Storage Region: " STORAGE_REGION; \
+	read -p "Bucket Name:" AWS_BUCKET; \
+	terraform init \
+		-backend-config="bucket=$${AWS_BUCKET}"\
+		-backend-config="region=$${STORAGE_REGION}"\
+		&& terraform get -update
 
 apply: init
 	read -p "Cluster Name: " CLUSTER_NAME; \
