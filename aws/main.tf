@@ -11,12 +11,12 @@ terraform {
 module "kube" {
   source = "./kube"
 
-  app_name = "${var.app_name}"
+  env_name = "${var.env_name}"
   aws_region_storage = "${var.aws_region_storage}"
 }
 
-output "app_name" {
-  value = "${var.app_name}"
+output "env_name" {
+  value = "${var.env_name}"
 }
 
 output "aws-region" {

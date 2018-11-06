@@ -1,5 +1,5 @@
 resource "aws_iam_role" "kube-role" {
-  name               = "terraform-eks-cluster-${var.app_name}"
+  name               = "terraform-eks-cluster-${var.env_name}"
   assume_role_policy = "${data.aws_iam_policy_document.kube_role.json}"
 }
 

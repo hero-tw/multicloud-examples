@@ -1,8 +1,6 @@
 .DEFAULT_GOAL := help
 
-#AWS_PROFILE=default
-#PROJECT=eks-hero
-#PRIMARY_REGION=us-west-1
+AWS_PROFILE=default
 TF_VAR_aws_region = $PRIMARY_REGION
 
 help:

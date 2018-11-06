@@ -1,41 +1,36 @@
 data "aws_availability_zones" "available" {}
 
-resource "aws_vpc" "kube" {
-  cidr_block = "10.0.0.0/16"
-
+resource "aws_default_vpc" "kube" {
   tags = "${
 	map(
-	 "Name", "${var.app_name}-vpc",
-	 "kubernetes.io/cluster/${var.app_name}", "shared"
+	 "Name", "${var.env_name}-vpc",
+	 "kubernetes.io/cluster/${var.env_name}", "shared"
 	)
   }"
 }
 
-resource "aws_subnet" "kube" {
-  count = 2
-
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
-  cidr_block        = "10.0.${count.index}.0/24"
-  vpc_id            = "${aws_vpc.kube.id}"
+resource "aws_default_subnet" "kube" {
+  availability_zone = "${var.aws_region_storage}"
 
   tags = "${
 	map(
-	 "Name", "${var.app_name}-subnet",
-	 "kubernetes.io/cluster/${var.app_name}", "shared"
+	 "Name", "${var.env_name}-subnet",
+	 "kubernetes.io/cluster/${var.env_name}", "shared"
 	)
   }"
 }
 
+/*
 resource "aws_internet_gateway" "kube" {
-  vpc_id = "${aws_vpc.kube.id}"
+  vpc_id = "${aws_default_vpc.kube.id}"
 
   tags {
-    Name = "${var.app_name}-gateway"
+    Name = "${var.env_name}-gateway"
   }
 }
 
 resource "aws_route_table" "kube" {
-  vpc_id = "${aws_vpc.kube.id}"
+  vpc_id = "${aws_default_vpc.kube.id}"
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -46,6 +41,7 @@ resource "aws_route_table" "kube" {
 resource "aws_route_table_association" "kube" {
   count = 2
 
-  subnet_id      = "${aws_subnet.kube.*.id[count.index]}"
+  subnet_id      = "${aws_default_subnet.kube.*.id[count.index]}"
   route_table_id = "${aws_route_table.kube.id}"
 }
+*/

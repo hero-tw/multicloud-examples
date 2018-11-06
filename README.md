@@ -11,15 +11,16 @@ https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html
 To create a bucket for a new terraform backend:
 
 ```
-cd multicloud-examples
-make one-time
+PROJECT=<add project name> PRIMARY_REGION=<us-east-1 or us-west-1> make one-time
 
 ```
 ## AWS Cluster Deployment
-To deploy a configured cluster:
+To deploy a configured cluster set the following environment variables and then run the commands below:
+* `AWS_BUCKET` - this is the bucket created in the step above, or bucket that was created to store the terraform state
+* `ENV_NAME` - this is the name of the infrastructure, it will be included in the name of most of the infra create
+* `REGION` - AWS region in which the infrastructure will be provisioned
 
 ```
-cd multicloud-examples
 make aws-apply
 ```
 

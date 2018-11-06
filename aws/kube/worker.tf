@@ -22,7 +22,7 @@ locals {
   node-userdata = <<USERDATA
 #!/bin/bash
 set -o xtrace
-/etc/eks/bootstrap.sh --apiserver-endpoint '${aws_eks_cluster.cluster.endpoint}' --b64-cluster-ca '${aws_eks_cluster.cluster.certificate_authority.0.data}' '${var.app_name}'
+/etc/eks/bootstrap.sh --apiserver-endpoint '${aws_eks_cluster.cluster.endpoint}' --b64-cluster-ca '${aws_eks_cluster.cluster.certificate_authority.0.data}' '${var.env_name}'
 USERDATA
 }
 
@@ -31,7 +31,7 @@ resource "aws_launch_configuration" "kube" {
   iam_instance_profile        = "${aws_iam_instance_profile.node.name}"
   image_id                    = "${data.aws_ami.eks-worker.id}"
   instance_type               = "m4.large"
-  name_prefix                 = "terraform-eks-${var.app_name}"
+  name_prefix                 = "terraform-eks-${var.env_name}"
 
   security_groups = [
     "${aws_security_group.node.id}",
@@ -49,20 +49,20 @@ resource "aws_autoscaling_group" "kube" {
   launch_configuration = "${aws_launch_configuration.kube.id}"
   max_size             = 2
   min_size             = 1
-  name                 = "terraform-eks-${var.app_name}"
+  name                 = "terraform-eks-${var.env_name}"
 
   vpc_zone_identifier = [
-    "${aws_subnet.kube.*.id}",
+    "${aws_default_subnet.kube.*.id}",
   ]
 
   tag {
     key                 = "Name"
-    value               = "terraform-eks-${var.app_name}"
+    value               = "terraform-eks-${var.env_name}"
     propagate_at_launch = true
   }
 
   tag {
-    key                 = "kubernetes.io/cluster/${var.app_name}"
+    key                 = "kubernetes.io/cluster/${var.env_name}"
     value               = "owned"
     propagate_at_launch = true
   }

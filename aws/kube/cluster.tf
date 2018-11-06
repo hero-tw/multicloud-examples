@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "cluster" {
-  name     = "${var.app_name}"
+  name     = "${var.env_name}"
   role_arn = "${aws_iam_role.kube-role.arn}"
 
   vpc_config {
@@ -8,7 +8,7 @@ resource "aws_eks_cluster" "cluster" {
     ]
 
     subnet_ids = [
-      "${aws_subnet.kube.*.id}",
+      "${aws_default_subnet.kube.*.id}",
     ]
   }
 
@@ -45,7 +45,7 @@ users:
       args:
         - "token"
         - "-i"
-        - "${var.app_name}"
+        - "${var.env_name}"
 KUBECONFIG
 }
 
