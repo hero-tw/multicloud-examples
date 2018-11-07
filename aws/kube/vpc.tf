@@ -20,6 +20,18 @@ resource "aws_default_subnet" "kube" {
   }"
 }
 
+resource "aws_default_subnet" "kube2" {
+  availability_zone = "us-east-1b"
+
+  tags = "${
+	map(
+	 "Name", "${var.env_name}-subnet2",
+	 "kubernetes.io/cluster/${var.env_name}", "shared"
+	)
+  }"
+}
+
+
 /*
 resource "aws_internet_gateway" "kube" {
   vpc_id = "${aws_default_vpc.kube.id}"

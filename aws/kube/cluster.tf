@@ -9,6 +9,7 @@ resource "aws_eks_cluster" "cluster" {
 
     subnet_ids = [
       "${aws_default_subnet.kube.*.id}",
+      "${aws_default_subnet.kube2.*.id}",
     ]
   }
 
